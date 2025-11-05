@@ -1,46 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="icon.jpg">
+<meta charset="UTF-8">
+<title>Reproductor ZenoFM Automático</title>
+<style>
+  body {
+    background: #0a0a0a;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding-top: 80px;
+  }
+  .btn {
+    background: #1db954;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+  }
+  audio {
+    margin-top: 40px;
+    width: 300px;
+  }
+</style>
 </head>
 <body>
-    <header>
-        <div class="left">
-            <h1>FOMELAND</h1>
-            <h2>season 2</h2>
-        </div>
-        <div class="author">
-            <h3>FOMELAND</h3>
-            <div >
-                <p>Website</p>
-                <p>By Buttons</p>
-            </div>
-            <div>
-                <p>Code By</p>
-                <p>Fomeland</p>
-            </div>
-            <img src="images/codigoqr.png" alt="">
-        </div>
-    </header>
-    <div class="banner">
-        <div class="product">
-            <div class="soda" style="--url: url()">
-            </div>
-            <div class="soda" style="--url: url()">
-            </div>
-        </div>
 
+<h2>🎧 Radio en Vivo</h2>
+<p>Si no se reproduce automáticamente, presiona el botón:</p>
 
-        <div class="rock">
-            <img src="" alt="">
-            <img src="" alt="">
-            <img src="" alt="">
-        </div>
-    </div>
+<!-- Reproductor oculto -->
+<audio id="player" autoplay muted preload="auto" type="audio/mpeg">
+  <source src="http://uk18freenew.listen2myradio.com:15568/;stream.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Botón visible solo si el navegador bloquea el autoplay -->
+<button class="btn" id="playButton">Reproducir Radio</button>
+
+<script>
+const player = document.getElementById('player');
+const playButton = document.getElementById('playButton');
+
+// Intentar reproducir automáticamente
+player.play().then(() => {
+  // Si reproduce, activar el sonido
+  setTimeout(() => player.muted = false, 500);
+  playButton.style.display = 'none'; // ocultar el botón
+}).catch((error) => {
+  console.log("Autoplay bloqueado:", error);
+  playButton.style.display = 'inline-block'; // mostrar botón
+});
+
+// Si el usuario hace clic en el botón
+playButton.addEventListener('click', () => {
+  player.muted = false;
+  player.play();
+  playButton.style.display = 'none';
+});
+</script>
 
 </body>
 </html>
