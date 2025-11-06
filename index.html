@@ -1,65 +1,100 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Reproductor ZenoFM Automático</title>
-<style>
-  body {
-    background: #0a0a0a;
-    color: white;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding-top: 80px;
-  }
-  .btn {
-    background: #1db954;
-    border: none;
-    padding: 14px 28px;
-    border-radius: 8px;
-    font-size: 16px;
-    color: white;
-    cursor: pointer;
-  }
-  audio {
-    margin-top: 40px;
-    width: 300px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Radio Online</title>
+  <style>
+    body {
+      background: radial-gradient(circle at center, #111 0%, #000 100%);
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h2 {
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+    .player {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+    button {
+      background-color: #1db954;
+      border: none;
+      color: white;
+      font-size: 18px;
+      padding: 12px 25px;
+      margin: 10px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #17a447;
+      transform: scale(1.05);
+    }
+    button:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
 
-<h2>🎧 Radio en Vivo</h2>
-<p>Si no se reproduce automáticamente, presiona el botón:</p>
+  <h2>🎧 Mi Radio Online</h2>
 
-<!-- Reproductor oculto -->
-<audio id="player" autoplay muted preload="auto" type="audio/mpeg">
-  <source src="https://uk18freenew.listen2myradio.com/live.mp3?typeportmount=s1_15568_stream_171681416" type="audio/mpeg">
-</audio>
+  <div class="player">
+    <p id="status">Reproduciendo automáticamente...</p>
+    <button id="playBtn" disabled>▶️ Reproduciendo</button>
+    <button id="pauseBtn">⏸️ Pausar</button>
+  </div>
 
-<!-- Botón visible solo si el navegador bloquea el autoplay -->
-<button class="btn" id="playButton">Reproducir Radio</button>
+  <!-- IFRAME oculto para el autoplay -->
+  <iframe id="radioFrame"
+    src="https://uk18freenew.listen2myradio.com/live.mp3?typeportmount=s1_15568_stream_171681416"
+    allow="autoplay"
+    style="width:0;height:0;border:none;">
+  </iframe>
 
-<script>
-const player = document.getElementById('player');
-const playButton = document.getElementById('playButton');
+  <script>
+    const frame = document.getElementById("radioFrame");
+    const playBtn = document.getElementById("playBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const status = document.getElementById("status");
+    const streamURL = "https://uk18freenew.listen2myradio.com/live.mp3?typeportmount=s1_15568_stream_171681416";
 
-// Intentar reproducir automáticamente
-player.play().then(() => {
-  // Si reproduce, activar el sonido
-  setTimeout(() => player.muted = false, 500);
-  playButton.style.display = 'none'; // ocultar el botón
-}).catch((error) => {
-  console.log("Autoplay bloqueado:", error);
-  playButton.style.display = 'inline-block'; // mostrar botón
-});
+    pauseBtn.addEventListener("click", () => {
+      frame.src = ""; // detener
+      status.textContent = "Radio detenida.";
+      playBtn.disabled = false;
+      playBtn.textContent = "▶️ Reanudar";
+      pauseBtn.disabled = true;
+    });
 
-// Si el usuario hace clic en el botón
-playButton.addEventListener('click', () => {
-  player.muted = false;
-  player.play();
-  playButton.style.display = 'none';
-});
-</script>
+    playBtn.addEventListener("click", () => {
+      frame.src = streamURL; // reanudar
+      status.textContent = "Reproduciendo...";
+      playBtn.disabled = true;
+      playBtn.textContent = "▶️ Reproduciendo";
+      pauseBtn.disabled = false;
+    });
+
+    // Al cargar, desactiva el botón de play porque el audio ya empieza solo
+    window.addEventListener("load", () => {
+      playBtn.disabled = true;
+      pauseBtn.disabled = false;
+    });
+  </script>
 
 </body>
 </html>
